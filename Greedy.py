@@ -1,56 +1,35 @@
 from collections import deque
 
 class Graph:
-    # example of adjacency list (or rather map)
-    # adjacency_list = {
-    # 'A': [('B', 1), ('C', 3), ('D', 7)],
-    # 'B': [('D', 5)],
-    # 'C': [('D', 12)]
-    # }
+  
 
-    def __init__(self, adjacency_list,heuristic):
+    def __init__(self,adjacency_list,heuristic):
         self.adjacency_list = adjacency_list
         self.h = heuristic
 
     def get_neighbors(self, v):
         return self.adjacency_list[v]
 
-    # heuristic function with equal values for all nodes
-
-
     def a_star_algorithm(self, start_node, stop_node):
-        # open_list is a list of nodes which have been visited, but who's neighbors
-        # haven't all been inspected, starts off with the start node
-        # closed_list is a list of nodes which have been visited
-        # and who's neighbors have been inspected
         count_node = 0;
         open_list = set([start_node])
         closed_list = set([])
 
-        # g contains current distances from start_node to all other nodes
-        # the default value (if it's not found in the map) is +infinity
-        g = {}
-
-        g[start_node] = 0
-
-        # parents contains an adjacency map of all nodes
         parents = {}
         parents[start_node] = start_node
 
         while len(open_list) > 0:
             n = None
 
-            # find a node with the lowest value of f() - evaluation function
             for v in open_list:
-                if n == None or g[v] + self.h[v] < g[n] + self.h[n]:
+                if n == None or self.h[v] < self.h[n]:
                     n = v;
 
             if n == None:
                 print('Path does not exist!')
                 return None
 
-            # if the current node is the stop_node
-            # then we begin reconstructin the path from it to the start_node
+            
             if n == stop_node:
                 reconst_path = []
 
@@ -67,30 +46,26 @@ class Graph:
                 print(count_node)
                 return reconst_path
 
-            # for all neighbors of the current node do
-            for (m, weight) in self.get_neighbors(n):
-                # if the current node isn't in both open_list and closed_list
-                # add it to open_list and note n as it's parent
+            
+            for (m) in self.get_neighbors(n):
+                
                 if m not in open_list and m not in closed_list:
                     open_list.add(m)
                     count_node +=1
                     parents[m] = n
-                    g[m] = g[n] + weight
+                    
 
-                # otherwise, check if it's quicker to first visit n, then m
-                # and if it is, update parent data and g data
-                # and if the node was in the closed_list, move it to open_list
+               
                 else:
-                    if g[m] > g[n] + weight:
-                        g[m] = g[n] + weight
+                    if self.h[m] > self.h[n]:
+                        self.g[m] = self.g[n]
                         parents[m] = n
 
                         if m in closed_list:
                             closed_list.remove(m)
                             open_list.add(m)
 
-            # remove n from the open_list, and add it to closed_list
-            # because all of his neighbors were inspected
+            
             open_list.remove(n)
             closed_list.add(n)
 
@@ -98,9 +73,9 @@ class Graph:
         return None
 
 adjacency_list_0 = {
-    'A': [('B', 1), ('C', 3), ('D', 7)],
-    'B': [('D', 5)],
-    'C': [('D', 12)],
+    'A': [('B'), ('C'), ('D')],
+    'B': [('D')],
+    'C': [('D')],
     'D': []
 }
 heuristic_0 = {
@@ -112,14 +87,14 @@ heuristic_0 = {
 graph1 = Graph(adjacency_list_0,heuristic_0)
 graph1.a_star_algorithm('A', 'D')
 # ----Phần bài tập
-# Câu 1: chạy thử A* với các đồ thị:
+# Câu 1: chạy thử Greedy với các đồ thị:
 adjacency_list_1 = {
-    'S': [('F', 3), ('A', 2), ('B', 1)],
-    'F': [('G', 6)],
-    'A': [('C', 2),('D',3)],
-    'B': [('D',2),('E',4)],
-    'C':[('G',4)],
-    'D':[('G',4)],
+    'S': [('F'), ('A'), ('B')],
+    'F': [('G')],
+    'A': [('C'),('D')],
+    'B': [('D'),('E')],
+    'C':[('G')],
+    'D':[('G')],
     'E':[],
     'G':[]
         
@@ -135,26 +110,26 @@ heuristic_1 = {
     'G': 0,
 
 }
-print("đây là kết quả A* đồ thị 1:")
+print("đây là kết quả Greedy đồ thị 1:")
 graph1 = Graph(adjacency_list_1,heuristic_1)
 graph1.a_star_algorithm('S', 'G')
 # Đồ thị 2:
 adjacency_list_2 = {
-    's': [('h', 7), ('f', 5)],
-    'h': [('k', 6)],
-    'f': [('p', 4)],
-    'k': [('c', 5)],
-    'p':[('q', 4)],
-    'q':[('r',3)],
-    'r':[('t',2)],
-    't':[('g',1)],
-    'c':[('a', 5)],
-    'a': [('b', 4)],
-    'b': [('d', 3)],
-    'd': [('m', 2),('e', 4)],
-    'e': [('n', 3)],
-    'm': [('g', 1)],
-    'n': [('m', 2)],
+    's': [('h' ), ('f' )],
+    'h': [('k' )],
+    'f': [('p' )],
+    'k': [('c' )],
+    'p':[('q' )],
+    'q':[('r')],
+    'r':[('t')],
+    't':[('g')],
+    'c':[('a' )],
+    'a': [('b' )],
+    'b': [('d' )],
+    'd': [('m' ),('e' )],
+    'e': [('n' )],
+    'm': [('g' )],
+    'n': [('m' )],
     'g': [],
         
 }
@@ -177,19 +152,19 @@ heuristic_2 = {
     'g': 0,
 
 }
-print("đây là kết quả A* đồ thị 2:")
+print("đây là kết quả Greedy đồ thị 2:")
 graph1 = Graph(adjacency_list_2,heuristic_2)
 graph1.a_star_algorithm('s', 'g')
 
 # Đồ thị 3:
 adjacency_list_3 = {
-    'A': [('B', 1), ('C', 4)],   
-    'B': [('C',1),('D',5)],
-    'C':[('D',3)],
-    'D':[('F', 3), ('E', 8), ('G', 9)],
-    'E':[('G',2)],
-    'F':[('G',5)],
-    'G':[]
+    'A': [('B'), ('C')],   
+    'B': [('C'),('D')],
+    'C':[('D')],
+    'D':[('F'), ('E'), ('G')],
+    'E':[('G')],
+    'F':[('G')],
+    'G':[],
 }
 heuristic_3_h1 = {    
     'A': 9.5,
@@ -211,7 +186,7 @@ heuristic_3_h2 = {
     'G': 0,
 
 }
-print("đây là kết quả A* đồ thị 3:")
+print("đây là kết quả Greedy đồ thị 3:")
 print("với h1 thì")
 graph1 = Graph(adjacency_list_3,heuristic_3_h1)
 graph1.a_star_algorithm('A', 'G')
@@ -220,18 +195,18 @@ graph1 = Graph(adjacency_list_3,heuristic_3_h2)
 graph1.a_star_algorithm('A', 'G')
 #Đồ thị 4:
 adjacency_list_4 = {
-    'Arad': [('Zer',75),('Tim',118),('Sib',140)],
-    'Zer': [('Ora',71)],
-    'Tim': [('Lug',111)],
-    'Sib': [('Fag',99),('Rim',80)],
-    'Ora': [('Sib',151)],
-    'Lug': [('Meh',70)],
-    'Rim' :[('Pit',97),('Cra',146)],
-    'Fag' :[('Buc',211)],
-    'Meh' :[('Dob',75)],
-    'Dob' :[('Cra',120)],
-    'Cra' :[('Pit',138)],
-    'Pit' :[('Buc',101)],
+    'Arad': [('Zer'),('Tim'),('Sib')],
+    'Zer': [('Ora')],
+    'Tim': [('Lug')],
+    'Sib': [('Fag'),('Rim')],
+    'Ora': [('Sib')],
+    'Lug': [('Meh')],
+    'Rim' :[('Pit'),('Cra')],
+    'Fag' :[('Buc')],
+    'Meh' :[('Dob')],
+    'Dob' :[('Cra')],
+    'Cra' :[('Pit')],
+    'Pit' :[('Buc')],
     'Buc':[]
         
 }
@@ -251,7 +226,7 @@ heuristic_4 = {
     'Buc': 0
 
 }
-print("đây là kết quả A* đồ thị 4:")
+print("đây là kết quả Greedy đồ thị 4:")
 graph1 = Graph(adjacency_list_4,heuristic_4)
 graph1.a_star_algorithm('Arad', 'Buc')
 
